@@ -69,3 +69,39 @@ is a no-op and only the update remains.
 - [x] GitHub issue register (#2)
 - [x] Commit submodule pointer bumps and push (2661e41)
 - [x] GitHub issue update (close on success) (#2 closed)
+
+## Strip ESP32 wiring; simplify main.py to motor-only
+
+### Background
+ESP32S3 status board is no longer part of the rig scenario. The
+`coordinator/esp32_client.py` module was already removed when the
+whole `coordinator/` package was dropped. What remains is the ESP-
+shaped wiring in `main.py` and the ESP rows in `README.md`. `main.py`
+also still imports the deleted `coordinator.paths`, so the vendor
+sys.path bootstrap needs to live somewhere — inline it directly in
+`main.py` rather than resurrecting the `coordinator/` package.
+`ToDo.md` historical entries stay untouched (append-only).
+
+### Work items
+- [x] `main.py`: drop ESP import, config var, instantiation, and
+      the post-move polling block; update the module docstring to
+      stop mentioning the status board
+- [x] `main.py`: replace the `import coordinator.paths` line with an
+      inlined sys.path injection that mirrors what the deleted
+      `paths.py` did (insert `vendor/<sub>` paths before the vendor
+      imports); keep `# ruff: noqa: I001` because import order is
+      still load-bearing
+      (also added E402 to the file-level noqa because vendor imports
+      now come after a non-import block)
+- [x] `README.md`: remove the ESP32 row from the module table, the
+      `esp32_client.py` line from the layout block, the
+      `ESP32_BASE_URL` bullet from Configuration, and the trailing
+      "plus a read-only HTTP client for the ESP32S3 status board"
+      phrase from the intro paragraph
+- [x] `ruff check main.py` and `ruff format --check main.py` clean
+- [x] Smoke test `python -c "import ast; ast.parse(open('main.py').read())"`
+      to confirm the file parses (no real hardware available in this
+      container, so we can't actually run `python main.py`)
+- [x] GitHub issue register (#3)
+- [ ] Commit and push
+- [ ] GitHub issue update (close on success)

@@ -2,25 +2,28 @@
 
 Drives the MKS SERVO57D (USB-CAN) and the LinearMotorController
 (RS485 / MINAS protocol) through a single coordinated scenario.
-Both motors move in parallel via threads. After the move, the
-ESP32S3 status board is polled read-only; if it is unreachable
-the run continues, since the status board is observational only.
+Both motors move in parallel via threads.
 """
 
-# ruff: noqa: I001
-# Import order is load-bearing: coordinator.paths must execute
-# before the vendor imports below, since it injects vendor/
-# subdirectories into sys.path. isort would reorder it after the
-# third-party block and break the runtime.
+# ruff: noqa: I001, E402
+# Import order is load-bearing: the sys.path injection below must
+# run before the vendor imports so their modules resolve. isort
+# would reorder it after the third-party block and break the
+# runtime. E402 is suppressed because the vendor imports are
+# intentionally after a small non-import block (the sys.path loop).
 
+import sys
 import threading
+from pathlib import Path
 
-import coordinator.paths  # noqa: F401  # sys.path bootstrap
+vendor_dir = Path(__file__).resolve().parent / "vendor"
+for sub in ("MKSServo57DCANController", "LinearMotorController"):
+    path = vendor_dir / sub
+    if path.is_dir() and str(path) not in sys.path:
+        sys.path.insert(0, str(path))
 
 from LinearMotorController import LinearMotorController
 from mks_motor import MKSMotor
-
-from coordinator.esp32_client import Esp32Client
 
 # --- Hardware connection settings -----------------------------
 # MKS_PORT is the FTDI device index for the USB-CAN adapter.
@@ -31,12 +34,6 @@ mks_port = 0
 
 # Serial device path for the Panasonic MINAS A6 amplifier.
 linear_serial = "/dev/ttyUSB0"
-
-# Base URL for the ESP32 status endpoint. The actual host:port
-# will be finalized when the status board is wired into the rig
-# network; until then this stays a placeholder and the polling
-# step will silently no-op.
-esp32_base_url = "http://localhost:8080"
 
 # --- Motion targets -------------------------------------------
 mks_target_mm = 100.0
@@ -67,7 +64,6 @@ def main() -> None:
     """Run the MKS + LinearMotor co-motion scenario."""
     mks = MKSMotor.open(port=mks_port)
     linear = LinearMotorController(linear_serial)
-    esp32 = Esp32Client(esp32_base_url)
 
     try:
         mks_thread = threading.Thread(target=run_mks, args=(mks,))
@@ -81,12 +77,6 @@ def main() -> None:
         linear_final_mm = linear.read_position_mm()
         print(f"MKS  target: {mks_target_mm:.3f} mm")
         print(f"Linear final: {linear_final_mm} mm")
-
-        status = esp32.get_status()
-        if status is None:
-            print(f"ESP32 unreachable at {esp32_base_url}; skipped.")
-        else:
-            print(f"ESP32 status: {status}")
 
     finally:
         mks.close()
