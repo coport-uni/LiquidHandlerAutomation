@@ -42,5 +42,5 @@ modules from a single `main.py`. Decisions captured 2026-05-14:
       not installed in this container, which `pip install -r
       requirements.txt` resolves.
 - [x] GitHub issue register (#1)
-- [ ] Commit and push
-- [ ] GitHub issue update (close)
+- [x] Commit and push (2f5b98b)
+- [x] GitHub issue update (#1 closed)
