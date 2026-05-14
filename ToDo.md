@@ -18,21 +18,29 @@ modules from a single `main.py`. Decisions captured 2026-05-14:
   together in a single coordinated run.
 
 ### Work items
-- [ ] Scaffold governance: copy `CLAUDE.md`, `ruff.toml`,
+- [x] Scaffold governance: copy `CLAUDE.md`, `ruff.toml`,
       `LearnedPatterns.md`, `.claude/`, `.gitignore` from MKS
-      repo (done as part of initial commit)
-- [ ] Add submodules
+      repo (landed in 2d6561e)
+- [x] Add submodules
       `vendor/MKSServo57DCANController` and
       `vendor/LinearMotorController`
-- [ ] Create `coordinator/` package: `__init__.py`,
+- [x] Create `coordinator/` package: `__init__.py`,
       `paths.py` (sys.path bootstrap), `esp32_client.py`
       (read-only HTTP polling, tolerant of unreachable host)
-- [ ] Write `main.py` exercising MKS + LinearMotor together
+- [x] Write `main.py` exercising MKS + LinearMotor together
       (open, home/setup, move in parallel, print final
-      positions, poll ESP32 status, close)
-- [ ] Add `requirements.txt`: `ftd2xx`, `pyserial`, `requests`
-- [ ] Run `ruff check` and `ruff format --check` on
-      `coordinator/` and `main.py`
-- [ ] GitHub issue register
+      positions, poll ESP32 status, close); `# ruff: noqa:
+      I001` documented because the path-bootstrap import must
+      precede the vendor imports
+- [x] Add `requirements.txt`: `ftd2xx`, `pyserial`, `requests`
+- [x] Run `ruff check` and `ruff format --check` on
+      `coordinator/` and `main.py` — all clean
+- [x] Verified path bootstrap with
+      `python3 -c 'import coordinator.paths'`: both vendor
+      directories injected into sys.path. Actual hardware
+      module imports fail only because `pyserial`/`ftd2xx` are
+      not installed in this container, which `pip install -r
+      requirements.txt` resolves.
+- [x] GitHub issue register (#1)
 - [ ] Commit and push
 - [ ] GitHub issue update (close)
