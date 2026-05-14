@@ -103,5 +103,5 @@ sys.path bootstrap needs to live somewhere — inline it directly in
       to confirm the file parses (no real hardware available in this
       container, so we can't actually run `python main.py`)
 - [x] GitHub issue register (#3)
-- [ ] Commit and push
-- [ ] GitHub issue update (close on success)
+- [x] Commit and push (99b74e6)
+- [x] GitHub issue update (close on success) (#3 closed)
