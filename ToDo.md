@@ -184,5 +184,5 @@ after the ESP client was removed.
       (also expanded the Configuration bullets to enumerate every
       constant exposed at the top of main.py)
 - [x] GitHub issue register (#5)
-- [ ] Commit and push
-- [ ] GitHub issue update (close on success)
+- [x] Commit and push (c979de3)
+- [x] GitHub issue update (close on success) (#5 closed)
