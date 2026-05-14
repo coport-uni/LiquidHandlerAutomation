@@ -152,3 +152,37 @@ those are upstream-of-record and must not be edited from here.
 - [x] GitHub issue register (#4)
 - [x] Commit and push (ebba9ed)
 - [x] GitHub issue update (close on success) (#4 closed)
+
+## Rewrite README.md to match current code state
+
+### Background
+After the ESP removal (99b74e6) and the `vendor/` -> `submodules/`
+rename (ebba9ed), the README is paths-correct but understates what
+`main.py` actually does. The current single-file entry point opens
+both motors, runs `setup`/`home`/`move_to` on the MKS and
+`move_to_mm` on the linear stage in parallel threads, prints final
+positions, and closes the channels. None of that flow is documented.
+The README also still names a planned `SyringePumpController` module
+that has no presence in `main.py` or `submodules/`.
+
+Out of scope (flagged for the user but not part of this task):
+`requirements.txt` still lists `requests`, which is now orphaned
+after the ESP client was removed.
+
+### Work items
+- [x] Rewrite the intro paragraph to describe the actual scenario
+      (two motors, parallel threads, single-file entry point) rather
+      than the abstract framing
+- [x] Add a short "How it runs" section describing the order of
+      operations in `main()` so a reader can predict what
+      `python main.py` will do without opening the file
+- [x] Demote `SyringePumpController` from the module table to a
+      footnote/planned line so the table only lists modules that are
+      actually wired in
+- [x] Keep the Layout / Quick start / Configuration / Conventions
+      sections — they already match the current code state
+      (also expanded the Configuration bullets to enumerate every
+      constant exposed at the top of main.py)
+- [x] GitHub issue register (#5)
+- [ ] Commit and push
+- [ ] GitHub issue update (close on success)
