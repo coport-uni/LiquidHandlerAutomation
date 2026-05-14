@@ -7,18 +7,18 @@ Both motors move in parallel via threads.
 
 # ruff: noqa: I001, E402
 # Import order is load-bearing: the sys.path injection below must
-# run before the vendor imports so their modules resolve. isort
+# run before the submodule imports so their modules resolve. isort
 # would reorder it after the third-party block and break the
-# runtime. E402 is suppressed because the vendor imports are
+# runtime. E402 is suppressed because the submodule imports are
 # intentionally after a small non-import block (the sys.path loop).
 
 import sys
 import threading
 from pathlib import Path
 
-vendor_dir = Path(__file__).resolve().parent / "vendor"
+submodules_dir = Path(__file__).resolve().parent / "submodules"
 for sub in ("MKSServo57DCANController", "LinearMotorController"):
-    path = vendor_dir / sub
+    path = submodules_dir / sub
     if path.is_dir() and str(path) not in sys.path:
         sys.path.insert(0, str(path))
 
@@ -27,7 +27,7 @@ from mks_motor import MKSMotor
 
 # --- Hardware connection settings -----------------------------
 # MKS_PORT is the FTDI device index for the USB-CAN adapter.
-# Identify it with vendor/MKSServo57DCANController/
+# Identify it with submodules/MKSServo57DCANController/
 # CAN2USBAdapterDeviceRecognition.py when more than one FTDI
 # device is attached.
 mks_port = 0

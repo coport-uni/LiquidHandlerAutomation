@@ -105,3 +105,50 @@ sys.path bootstrap needs to live somewhere — inline it directly in
 - [x] GitHub issue register (#3)
 - [x] Commit and push (99b74e6)
 - [x] GitHub issue update (close on success) (#3 closed)
+
+## Rename `vendor/` directory to `submodules/`
+
+### Background
+User requested renaming the top-level `vendor/` folder to
+`submodules/` (plural). The rename touches three layers:
+
+1. Filesystem + git index: the two submodule checkouts move to
+   `submodules/MKSServo57DCANController` and
+   `submodules/LinearMotorController`.
+2. `.gitmodules` path entries and `.git/config` submodule URLs.
+3. Code/doc references in `main.py` (sys.path injection and
+   comments) and `README.md` (intro paragraph, module table,
+   layout block, configuration bullet). `ToDo.md` is append-only;
+   historical mentions stay.
+
+The upstream `vendor/MKSServo57DCANController/README.md` and its
+own `ToDo.md` mention `vendor/` in their own descriptions, but
+those are upstream-of-record and must not be edited from here.
+
+### Work items
+- [x] `git mv vendor submodules` to move both submodule checkouts
+      in one step (git handles the `.gitmodules` path rewrite and
+      the index update; section headers in `.gitmodules` had to be
+      renamed manually because `git mv` only rewrites the `path` line)
+- [x] `git submodule sync --recursive` to update the
+      `.git/config` URLs (also cleaned up stale
+      `submodule.vendor/*` entries with `git config --remove-section`;
+      `.git/modules/vendor/` storage is left in place since gitfile
+      surgery offers no benefit on a working tree that already
+      resolves cleanly)
+- [x] Verify `.gitmodules` paths now read `submodule/<name>` and
+      `git submodule status` reports both as clean and at the
+      same SHAs (`6d4e9223`, `2d1f1683`)
+- [x] `main.py`: change the literal `"vendor"` in the sys.path
+      bootstrap (line 19) to `"submodules"`; update the two
+      comments that point at `vendor/MKSServo57DCANController/`
+      (also renamed `vendor_dir` → `submodules_dir` and updated
+      the noqa comment wording)
+- [x] `README.md`: rewrite the five `vendor/` references in the
+      intro paragraph, the module table, the layout block, and
+      the configuration bullet
+- [x] `ruff check main.py` and `ruff format --check main.py` clean
+- [x] Smoke test `python3 -c "import ast; ast.parse(open('main.py').read())"`
+- [x] GitHub issue register (#4)
+- [ ] Commit and push
+- [ ] GitHub issue update (close on success)

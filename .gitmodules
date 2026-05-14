@@ -1,6 +1,6 @@
-[submodule "vendor/MKSServo57DCANController"]
-	path = vendor/MKSServo57DCANController
+[submodule "submodules/MKSServo57DCANController"]
+	path = submodules/MKSServo57DCANController
 	url = https://github.com/coport-uni/MKSServo57DCANController.git
-[submodule "vendor/LinearMotorController"]
-	path = vendor/LinearMotorController
+[submodule "submodules/LinearMotorController"]
+	path = submodules/LinearMotorController
 	url = https://github.com/coport-uni/LinearMotorController.git
