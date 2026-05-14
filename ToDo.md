@@ -67,5 +67,5 @@ is a no-op and only the update remains.
 - [x] Sanity check: `git -C vendor/<each> log -1` confirms the
       checked-out commit matches the upstream branch tip
 - [x] GitHub issue register (#2)
-- [ ] Commit submodule pointer bumps and push
-- [ ] GitHub issue update (close on success)
+- [x] Commit submodule pointer bumps and push (2661e41)
+- [x] GitHub issue update (close on success) (#2 closed)
