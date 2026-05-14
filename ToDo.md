@@ -150,5 +150,5 @@ those are upstream-of-record and must not be edited from here.
 - [x] `ruff check main.py` and `ruff format --check main.py` clean
 - [x] Smoke test `python3 -c "import ast; ast.parse(open('main.py').read())"`
 - [x] GitHub issue register (#4)
-- [ ] Commit and push
-- [ ] GitHub issue update (close on success)
+- [x] Commit and push (ebba9ed)
+- [x] GitHub issue update (close on success) (#4 closed)
